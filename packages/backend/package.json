@@ -4,6 +4,12 @@
 	"main": "index.js",
 	"license": "MIT",
 	"dependencies": {
-		"bitcoinjs-lib": "^6.1.5"
+		"@openzeppelin/contracts": "^5.0.1",
+		"bitcoinjs-lib": "^6.1.5",
+		"ethers": "^6.10.0"
+	},
+	"devDependencies": {
+		"@nomicfoundation/hardhat-toolbox": "^4.0.0",
+		"hardhat": "^2.19.4"
 	}
 }
