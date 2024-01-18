@@ -1,19 +1,25 @@
 const axios = require("axios"); // HTTP client
-const fs = require("fs");
+
+/* const fs = require("fs");
 const envFilePath = "../../env.json";
 const envFileContent = fs.readFileSync(envFilePath, "utf8");
 const envConfig = JSON.parse(envFileContent);
+ */
 
-// Configure Bitcoin node RPC
-const BTC_API_KEY = envConfig.BTC_API_KEY;
+// Configure Bitcoin Api
 const btcApiBase = `https://api.blockcypher.com/v1/btc/test3/`;
-console.log("btcRpcUrl:", btcRpcUrl);
 
+/*
+@param address - address of the user
+@dev bitcoinUnspentCall function gets the unspent transactions of the address
+@returns array of unspent transactions
+*/
 function bitcoinUnspentCall(address) {
   return axios
     .get(`${btcApiBase}addrs/${address}?unspentOnly=true`)
     .then((response) => {
       let inputs = [];
+      let inputsHex = [];
       let utxos = response.data.txrefs;
       let totalAmountAvailable = 0;
       let inputCount = 0;
@@ -24,12 +30,6 @@ function bitcoinUnspentCall(address) {
           utxo.satoshis = element.value;
           utxo.address = address;
           utxo.vout = element.tx_output_n;
-          axios
-            .get(`${btcApiBase}txs/${utxo.txid}?includeHex=true`)
-            .then((response) => {
-              utxo.scriptPubKey = response.data.outputs[utxo.vout].script;
-              utxo.hex = response.data.hex;
-            });
           totalAmountAvailable += utxo.satoshis;
           inputCount++;
           inputs.push(utxo);
@@ -39,13 +39,24 @@ function bitcoinUnspentCall(address) {
       }
       console.log(inputs);
       console.log("Total Amount Available: ", totalAmountAvailable);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }
+/*
+@param txid - transaction id
+@dev bitcoinTxHexCall function gets the transaction hex
+@returns transaction hex
+*/
 function bitcoinTxHexCall(txid) {
   return axios
     .get(`https://api.blockcypher.com/v1/btc/test3/txs/${txid}?includeHex=true`)
     .then((response) => {
       console.log(response.data.hex);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }
 
