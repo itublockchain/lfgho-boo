@@ -3,8 +3,11 @@ const { ECPairFactory } = require("ecpair");
 const tinysecp = require("tiny-secp256k1");
 const ECPair = ECPairFactory(tinysecp);
 const psbt = new bitcoin.Psbt({ network: bitcoin.networks.testnet }); // For Mainnet: const psbt = new bitcoin.Psbt({ network: bitcoin.networks.bitcoin })
-require("dotenv").config();
-
+const fs = require("fs");
+const envFilePath = "../env.json";
+const envFileContent = fs.readFileSync(envFilePath, "utf8");
+const envConfig = JSON.parse(envFileContent);
+const BTC_PRIVATE_KEY = envConfig.BTC_PRIVATE_KEY;
 // Validator to validate signature
 const validator = (pubkey, msghash, signature) =>
   ECPair.fromPublicKey(pubkey).verify(msghash, signature);
@@ -82,13 +85,7 @@ console.log("Unsigned PSBT Hex: ", unsignedPsbtHex);
 
 // Sign the transaction
 console.log("Signing Transaction...");
-psbt.signInput(
-  0,
-  ECPair.fromWIF(
-    "cNCYrz925MWA9JqLhAzxU5CoX71GvbN3de8FuN8oCWd7fERdArCc",
-    bitcoin.networks.testnet
-  )
-);
+psbt.signInput(0, ECPair.fromWIF(BTC_PRIVATE_KEY, bitcoin.networks.testnet));
 
 console.log("Validating Signatures...");
 // you can use validate signature method provided by library to make sure generated signature is valid
