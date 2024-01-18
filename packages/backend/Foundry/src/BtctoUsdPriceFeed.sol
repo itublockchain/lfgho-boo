@@ -18,4 +18,12 @@ contract BtctoUsdPriceFeed   {
      AggregatorV3Interface priceFeed = AggregatorV3Interface(0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43);
      return priceFeed.version();
    }
+
+   function getConversionRate(uint256 satoshiAmount) public view returns (uint256){
+     uint256 btcPrice = getPrice();
+     
+    //  should divide by 1e8 to get the price of 1 satoshi in usd
+     uint256 satoshiInUsd = (btcPrice * satoshiAmount) / 1e8;
+     return satoshiInUsd;
+   }
 }
