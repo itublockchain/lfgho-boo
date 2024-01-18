@@ -3,7 +3,7 @@ import { useModal } from "connectkit";
 import { useAccount, useDisconnect } from "wagmi";
 import React from "react";
 import { ConnectButton } from "orangekit";
-
+import Link from 'next/link';
 
 export default function Home() {
   const { isConnected, address, isConnecting } = useAccount();
@@ -30,10 +30,11 @@ export default function Home() {
             </div>
           )
         }
-      </div>
-    )
-  
-  function YourApp() {
-      return <ConnectButton />;
-    }
+        <ConnectButton />
+
+        <Link href="/payback">Payback</Link>
+        <Link href="/depozit"> Depozit</Link>
+      </div> 
+      )
 }
+

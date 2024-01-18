@@ -1,7 +1,8 @@
 'use client';
 import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-
+import { OrangeKitProvider } from "orangekit";
+import "orangekit/dist/index.css";
 const config = createConfig(
   getDefaultConfig({
     // Required API Keys
@@ -10,7 +11,6 @@ const config = createConfig(
 
     // Required
     appName: "Your App Name",
-
     // Optional
     appDescription: "Your App Description",
     appUrl: "https://family.co", // your app's url
@@ -19,11 +19,13 @@ const config = createConfig(
 );
 
 export const ConnectkitProvider = ({ children }) => {
-    return (
-        <WagmiConfig config={config}>
-            <ConnectKitProvider>
-                {children}
-            </ConnectKitProvider>
-        </WagmiConfig>
+  return (
+    <WagmiConfig config={config}>
+      <ConnectKitProvider>
+        <OrangeKitProvider>
+          {children}
+        </OrangeKitProvider>
+      </ConnectKitProvider>
+    </WagmiConfig>
   );
 }
