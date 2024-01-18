@@ -18,6 +18,7 @@ const unspentOutput = {
   vout: 0,
   address: "tb1qgzfedw36d62dcltug6cnutt2x5dach2833vtt6",
   scriptPubKey: "0014409396ba3a6e94dc7d7c46b13e2d6a351bdc5d47",
+  redeemScript: "",
   amount: 0.0001,
 };
 // get transaction hex
@@ -25,7 +26,7 @@ const rawTransaction =
   "02000000000101301186bb5e7df2a225815045fcef512ce93530292d8a224968a20ba0d6a26e510000000000ffffffff028813000000000000160014a8f8acfd3b26fcc5babfbc4df12e98fe48aa4aac7e13000000000000160014a8f8acfd3b26fcc5babfbc4df12e98fe48aa4aac0247304402200e8a46b3068b2dabc78ccdbc35ee79d6b84b00eb9157d55a4ddedf22a3a75f88022033f37c741eecf89129d1d366f3d6a4c3d84ff97d0ed0e7ecbf73410de49f97880121027ad4e1e5541d14fc78dc92f1f318be63765f173c3a0d33395651124459a5621200000000";
 
 // check if it's a Segwit or Non-Segwit transaction
-/* const isSegwit = rawTransaction.substring(8, 12) === "0001";
+const isSegwit = rawTransaction.substring(8, 12) === "0001";
 if (isSegwit) {
   // add segwit transaction input
 
@@ -38,21 +39,19 @@ if (isSegwit) {
     },
     redeemScript: Buffer.from(unspentOutput.redeemScript, "hex"),
   });
-} else { */
-
-// add non-segwit transaction input
-psbt.addInput({
-  hash: unspentOutput.txid,
-  index: unspentOutput.vout,
-  nonWitnessUtxo: Buffer.from(rawTransaction, "hex"),
-});
+} else {
+  // add non-segwit transaction input
+  psbt.addInput({
+    hash: unspentOutput.txid,
+    index: unspentOutput.vout,
+    nonWitnessUtxo: Buffer.from(rawTransaction, "hex"),
+  });
+}
 // add output - destination address and the amount to transfer to
 psbt.addOutput({
   address: "tb1q4ru2elfmym7vtw4lh3xlzt5cley25j4vrpp8et",
   value: 0.00005 * 100000000, // value in satoshi (0.0005 BTC)
 });
-
-//}
 
 // If we look closely, We have input of 1 BTC and we are trying to send 0.5 BTC
 // If we just use these configurations to send the transaction, it will consume remaining 0.5 BTC as fees
