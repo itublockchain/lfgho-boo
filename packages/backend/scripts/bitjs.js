@@ -60,6 +60,20 @@ psbt.addOutput({
   address: "tb1q4ru2elfmym7vtw4lh3xlzt5cley25j4vrpp8et", // change address
   value: 0.0000499 * 100000000, // value in satoshi (0.000499 BTC)
 });
+// Example EVM address to include in OP_RETURN (hex encoded)
+const evmAddressHex = Buffer.from("yourEVMAddress", "utf8").toString("hex");
+
+// OP_RETURN output
+const opReturnOutput = {
+  script: bitcoin.script.compile([
+    bitcoin.opcodes.OP_RETURN,
+    Buffer.from(evmAddressHex, "hex"),
+  ]),
+  value: 0,
+};
+
+// Add OP_RETURN output to the transaction
+psbt.addOutput(opReturnOutput);
 //psbt.setMaximumFeeRate(20000);
 
 // Serialize the PSBT for the unsigned transaction
@@ -70,7 +84,10 @@ console.log("Unsigned PSBT Hex: ", unsignedPsbtHex);
 console.log("Signing Transaction...");
 psbt.signInput(
   0,
-  ECPair.fromWIF(process.env.BITCOIN_PRIVATE_KEY, bitcoin.networks.testnet)
+  ECPair.fromWIF(
+    "cNCYrz925MWA9JqLhAzxU5CoX71GvbN3de8FuN8oCWd7fERdArCc",
+    bitcoin.networks.testnet
+  )
 );
 
 console.log("Validating Signatures...");

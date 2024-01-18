@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@openzeppelin/contracts": "^5.0.1",
+		"axios": "^1.6.5",
 		"bip32": "^4.0.0",
 		"bip39": "^3.1.0",
 		"bitcoinjs-lib": "^6.1.5",
@@ -13,7 +14,8 @@
 		"ecpair": "^2.1.0",
 		"ethers": "^6.10.0",
 		"mocha": "^10.2.0",
-		"tiny-secp256k1": "^2.2.3"
+		"tiny-secp256k1": "^2.2.3",
+		"web3": "^4.4.0"
 	},
 	"devDependencies": {
 		"@nomicfoundation/hardhat-toolbox": "^4.0.0",
