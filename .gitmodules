@@ -1,0 +1,3 @@
+[submodule "packages/backend/Foundry/lib/chainlink-brownie-contracts"]
+	path = packages/backend/Foundry/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
