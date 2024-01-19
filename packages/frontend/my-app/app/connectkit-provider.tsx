@@ -20,12 +20,14 @@ const config = createConfig(
 
 export const ConnectkitProvider = ({ children }) => {
   return (
-    <WagmiConfig config={config}>
-      <ConnectKitProvider>
+    <div><WagmiConfig config={config}>
+      <ConnectKitProvider theme="retro">
+        <div>
         <OrangeKitProvider>
           {children}
         </OrangeKitProvider>
+        </div>
       </ConnectKitProvider>
-    </WagmiConfig>
+    </WagmiConfig></div>
   );
 }
