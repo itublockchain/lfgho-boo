@@ -15,7 +15,7 @@ export default function Home() {
   const { disconnect } = useDisconnect();
   if (isConnecting) return <p>Connecting...</p>;
   return (
-    <div className="p=20 bg-[url('/bg.png')]" >
+    <div  id="anasayfa"  className="p=20     " >
       
       {
         !isConnected && (
