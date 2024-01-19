@@ -42,7 +42,7 @@ async function bitcoinRpcCall(method, params = []) {
 
     return response.data.result;
   } catch (e) {
-    console.e(`Error with Bitcoin RPC ${method}:`, e);
+    console.log(`Error with Bitcoin RPC ${method}:`, e);
     throw e;
   }
 }
@@ -62,11 +62,11 @@ async function submitBlockHeaderToRelay(blockHeader) {
   const contractWithSigner = relayContract.connect(wallet);
   try {
     // Send the transaction
-    const tx = await contractWithSigner.submitBlockHeader(blockHeader);
+    const tx = await contractWithSigner.HeaderToMerkle(blockHeader);
     const receipt = await tx.wait();
     console.log("Transaction receipt:", receipt);
   } catch (e) {
-    console.e("Error submitting block header to relay:", e);
+    console.log("Error submitting block header to relay:", e);
     throw e;
   }
 }
@@ -81,6 +81,6 @@ async function submitBlockHeaderToRelay(blockHeader) {
 
     //await submitBlockHeaderToRelay(blockHeader);
   } catch (e) {
-    console.e("Error in relay process:", e);
+    console.log("Error in relay process:", e);
   }
 })();
