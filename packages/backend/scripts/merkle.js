@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { MerkleTree } = require("merkletreejs");
+const Merkle = require("merkle-js");
 const SHA256 = require("crypto-js/sha256");
 const { ethers } = require("ethers"); // Ethereum JavaScript API
 const fs = require("fs");
@@ -87,7 +88,7 @@ const relayContractAbi = [
 ];
 // Initialize Ethereum ethers connection
 const privateKey = envConfig.ETH_PRIVATE_KEY;
-const provider = new ethers.providers.JsonRpcProvider(ethNodeUrl);
+const provider = new ethers.JsonRpcProvider(ethNodeUrl);
 const wallet = new ethers.Wallet(privateKey, provider);
 const relayContract = new ethers.Contract(
   relayContractAddress,
@@ -126,6 +127,7 @@ async function getBlockTransactions(blockHash, givenTxid) {
     const tree = new MerkleTree(leaves, SHA256, { isBitcoinTree: true });
     console.log("tree:", tree.toString());
     const root = tree.getRoot().toString("hex");
+    console.log("root:", root);
     const leaf = SHA256(givenTxid);
     const proof = tree.getProof(leaf);
     const proof2 = tree

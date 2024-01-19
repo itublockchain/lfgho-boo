@@ -1,26 +1,28 @@
 {
-	"name": "backend",
-	"version": "1.0.0",
-	"main": "index.js",
-	"license": "MIT",
-	"dependencies": {
-		"@openzeppelin/contracts": "^5.0.1",
-		"axios": "^1.6.5",
-		"bip32": "^4.0.0",
-		"bip39": "^3.1.0",
-		"bitcoinjs-lib": "^6.1.5",
-		"bitcore-lib": "^10.0.23",
-		"dotenv": "^16.3.1",
-		"ecpair": "^2.1.0",
-		"ethers": "5",
-		"merkletreejs": "^0.3.11",
-		"mocha": "^10.2.0",
-		"solidity-bytes-utils": "^0.8.2",
-		"tiny-secp256k1": "^2.2.3",
-		"web3": "^4.4.0"
-	},
-	"devDependencies": {
-		"@nomicfoundation/hardhat-toolbox": "^4.0.0",
-		"hardhat": "^2.19.4"
-	}
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "@truestamp/tree": "^2.1.0",
+    "axios": "^1.6.5",
+    "bip32": "^4.0.0",
+    "bip39": "^3.1.0",
+    "bitcoinjs-lib": "^6.1.5",
+    "bitcore-lib": "^10.0.23",
+    "dotenv": "^16.3.1",
+    "ecpair": "^2.1.0",
+    "ethers": "^6.10.0",
+    "merkle-js": "^0.0.2",
+    "merkletreejs": "^0.3.11",
+    "mocha": "^10.2.0",
+    "solidity-bytes-utils": "^0.8.2",
+    "tiny-secp256k1": "^2.2.3",
+    "web3": "^4.4.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.4"
+  }
 }
