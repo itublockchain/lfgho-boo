@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div id="home" className="flex justify-between">
       <>
-        <div className="flex flex-col">
+        
         <div
           className="absolute top-[40%] left-[50%] translate-y-[-50%] translate-x-[-50%] text-sm/[24px] font-bold
        bg-[#8AF3FB] p-30 rounded-[10px] shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)]  border-l-8 border-b-8 border-black text-center mb-32 
@@ -75,7 +75,7 @@ export default function Home() {
             Submit
           </button>
         </div>
-        </div>
+        
       </>
     </div>
   );
