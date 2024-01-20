@@ -2,7 +2,7 @@
 import { useModal } from "connectkit";
 import { useAccount, useDisconnect } from "wagmi";
 import React from "react";
-import { ConnectButton } from "orangekit";
+
 import Link from "next/link";
 import { linea } from "viem/chains";
 import DepositButton from "./components/deposit-button";
@@ -14,12 +14,13 @@ export default function Home() {
   const { setOpen } = useModal();
   const { disconnect } = useDisconnect();
   
+  console.log("isConnected", isConnected);
+  console.log(isConnecting);
   
   
   
   
-  
-  if (isConnecting) return <p>Connecting...</p>;
+  // if (isConnecting) return <p>Connecting...</p>;
   return (
     <div id="anasayfa" className="p=20 flex justify-between    ">
       <>
@@ -88,7 +89,7 @@ export default function Home() {
             </button>
           </div>
 
-          <ConnectButton />
+          {/* <ConnectButton /> */}
         </div>
       </>
     </div>

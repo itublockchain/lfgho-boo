@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -6,10 +7,10 @@ import { ConnectkitProvider } from './connectkit-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: 'Boo!',
-  description: '',
-}
+// export const metadata: Metadata = {
+//   title: 'Boo!',
+//   description: '',
+// }
 
 export default function RootLayout({
   children,
@@ -18,12 +19,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}> 
-      <div>
-      
-        <ConnectkitProvider>
-          {children}
-        </ConnectkitProvider>
+      <body className={inter.className}>
+        <div>
+          <ConnectkitProvider>
+            {children}
+          </ConnectkitProvider>
         </div>
       </body>
     </html>

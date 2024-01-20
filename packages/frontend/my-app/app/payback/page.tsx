@@ -2,7 +2,7 @@
 import React from "react";
 import { useModal } from "connectkit";
 import { useAccount, useDisconnect } from "wagmi";
-import { ConnectButton } from "orangekit";""
+// import { ConnectButton } from "orangekit";
 import Image from "next/image";
 
 const Page = () => {
@@ -16,7 +16,7 @@ const Page = () => {
   
   
   
-  if (isConnecting) return <p>Connecting...</p>;
+  // if (isConnecting) return <p>Connecting...</p>;
   return (
     <div id="anasayfa" className="p=20 flex justify-between    ">
       <>
@@ -85,7 +85,7 @@ const Page = () => {
             </button>
           </div>
 
-          <ConnectButton />
+          {/* <ConnectButton /> */}
         </div>
       </>
     </div>

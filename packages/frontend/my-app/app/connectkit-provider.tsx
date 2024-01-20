@@ -1,7 +1,7 @@
 'use client';
 import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import { OrangeKitProvider } from "orangekit";
+
 import "orangekit/dist/index.css";
 const config = createConfig(
   getDefaultConfig({
@@ -23,9 +23,9 @@ export const ConnectkitProvider = ({ children }) => {
     <div><WagmiConfig config={config}>
       <ConnectKitProvider theme="retro">
         <div>
-        <OrangeKitProvider>
+        
           {children}
-        </OrangeKitProvider>
+        
         </div>
       </ConnectKitProvider>
     </WagmiConfig></div>
