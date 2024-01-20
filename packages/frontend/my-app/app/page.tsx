@@ -6,6 +6,7 @@ import oracleABI from "./abis/oracleABI.json";
 
 export default function Home() {
   const [inputValue, setInputValue] = useState(1);
+  const [transactionID, setTransactionID] = useState("Deposit First");
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -55,8 +56,22 @@ export default function Home() {
               />
             </div>
           </div>
-          <button className="bg-[#b4faff] rounded-md border-[3px] px-4 py-1 mb-12 border-black">
+          <button className="bg-[#99DDE2] rounded-md border-[4px] px-4 py-1 mb-12 border-black font-bold">
             Deposit
+          </button>
+        </div>
+        <div
+          className="bg-[#8AF3FB] rounded-[10px] shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)]  border-l-8 border-b-8 border-black text-center 
+        w-[500px] h-[120px]  justify-center  flex flex-col items-center translate-y-[300%] translate-x-[94%]"
+        >
+          <input
+            type="text"
+            value={transactionID}
+            readOnly
+            className="bg-[#99DDE2] border-[3px] border-black rounded-md mt-3 py-1 w-[400px] text-center font-bold"
+          ></input>
+          <button className="bg-[#99DDE2] rounded-md border-[4px] px-4 py-1 mt-3 border-black font-bold">
+            Submit
           </button>
         </div>
       </>

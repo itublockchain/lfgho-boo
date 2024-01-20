@@ -88,6 +88,7 @@ useEffect(() => {
 const Header: React.FC = () => {
   const { isConnected, address, isConnecting } = useAccount();
   const { disconnect } = useDisconnect();
+  const [unisat, setUnisat] = useState(true);
 
   console.log("isConnected", isConnected);
   console.log(isConnecting);
@@ -116,8 +117,15 @@ const Header: React.FC = () => {
           </button>
         </div>
 
-        <div className="flex space-x-5  mt-9 mr-8">
-          <ConnectKitButton />
+        <div className="flex flex-row justify-between space-x-5  mt-9 mr-8">
+          <button
+            className="bg-[#99DDE2] text-black font-sans font-bold border-black border-[3px]
+  border-solid text-center rounded-lg textcolor-white w-[188px] h-[40px] mt-1 shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)] flex items-center justify-center"
+          >
+            <span className="truncate">0xb9D7....5838</span>
+          </button>
+
+          <ConnectKitButton mode="dark" />
         </div>
       </div>
     </>
