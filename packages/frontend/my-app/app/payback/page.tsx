@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import { useModal } from "connectkit";
 import { useAccount, useDisconnect } from "wagmi";
 // import { ConnectButton } from "orangekit";
@@ -92,4 +93,6 @@ const Page = () => {
   );
     
 }
-export default Page;
+export default dynamic(() => Promise.resolve(Page), {
+  ssr: false,
+});
