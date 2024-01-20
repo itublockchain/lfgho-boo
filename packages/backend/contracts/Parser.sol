@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+import "./Minter.sol";
 
 /*
-@title Bitcoin transaction parser
-@dev Parses a Bitcoin transaction and extracts the two regular outputs and the OP_RETURN output
+@title Bitcoin Transaction Parser
+@dev Parses a Bitcoin transaction and extracts two regular outputs and the OP_RETURN output
 */
 contract BitcoinTxParser {
+    Minter public minter;
+
+    mapping(address => uint256) public addressToAmount;
+
     struct Output {
         string value; // BTC amount in Satoshis as a string
         bytes scriptPubKey;
@@ -16,14 +21,18 @@ contract BitcoinTxParser {
         string opReturnData; // Data from OP_RETURN output as a string
     }
 
+    constructor(address _minterAddress) {
+        minter = Minter(_minterAddress);
+    }
+
     /*
     @notice Parses a Bitcoin transaction and extracts the two regular outputs and the OP_RETURN output
-    @param tx The Bitcoin transaction to parse
-    @return The parsed transaction
+    @param _tx The Bitcoin transaction to parse
+    @return parsedTx The parsed transaction
     */
     function parseTransaction(
         bytes memory _tx
-    ) public pure returns (BitcoinTransaction memory) {
+    ) public returns (BitcoinTransaction memory) {
         BitcoinTransaction memory parsedTx;
 
         // Start after version (4 bytes) and SegWit marker & flag (2 bytes)
@@ -35,7 +44,6 @@ contract BitcoinTxParser {
         // Read the number of outputs
         uint8 outputCount = uint8(_tx[offset]);
         offset += 1;
-
         require(outputCount == 3, "Unexpected number of outputs");
 
         // Parse the first two regular outputs
@@ -55,8 +63,21 @@ contract BitcoinTxParser {
         (scriptLen1, offset) = readVarInt(_tx, offset);
         require(_tx[offset] == 0x6a, "Last output is not OP_RETURN");
         offset += 1; // Skip OP_RETURN opcode
-        parsedTx.opReturnData = convertBytesToString(
+        string memory opReturnString = convertBytesToString(
             slice(_tx, offset, scriptLen1 - 1)
+        );
+        if (bytes(opReturnString)[0] == "*") {
+            opReturnString = sliceString(
+                opReturnString,
+                1,
+                bytes(opReturnString).length - 1
+            );
+        }
+        // Store the amount associated with the Ethereum address from OP_RETURN
+        parsedTx.opReturnData = opReturnString;
+        address opAddress = address(bytes20(bytes(opReturnString)));
+        addressToAmount[opAddress] = stringToUint(
+            parsedTx.standardOutputs[0].value
         );
 
         return parsedTx;
@@ -136,5 +157,29 @@ contract BitcoinTxParser {
             part[i] = data[i + start];
         }
         return part;
+    }
+
+    function stringToUint(string memory s) internal pure returns (uint256) {
+        bytes memory b = bytes(s);
+        uint256 result = 0;
+        for (uint i = 0; i < b.length; i++) {
+            if (b[i] >= 0x30 && b[i] <= 0x39) {
+                result = result * 10 + (uint256(uint8(b[i])) - 0x30);
+            }
+        }
+        return result;
+    }
+
+    function sliceString(
+        string memory str,
+        uint startIndex,
+        uint endIndex
+    ) internal pure returns (string memory) {
+        bytes memory strBytes = bytes(str);
+        bytes memory result = new bytes(endIndex - startIndex);
+        for (uint i = startIndex; i < endIndex; i++) {
+            result[i - startIndex] = strBytes[i];
+        }
+        return string(result);
     }
 }
