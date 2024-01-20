@@ -31,8 +31,16 @@ export default function Home() {
             height={50}
             className="pb-10"
           ></Image>
-          <DepositButton />
-          <PaybackButton />
+          <button className="bg-[#ffffff] text-black font-sans  font-bold border-black border-[3px]
+          border-solid px-6 py-1 rounded-2xl textcolor-white"
+      onClick={() => setOpen(true)}>
+        <a href="/">Home</a>
+      </button>
+      <button className="bg-[#99DDE2] text-black font-sans  font-bold border-black border-[3px]
+          border-solid px-6 py-1 rounded-2xl textcolor-white"
+      onClick={() => setOpen(true)}>
+        <a href="/payback">Payback</a>
+      </button>
         </div>
 
         <div className="flex space-x-5  mt-10 mr-8">
@@ -80,7 +88,7 @@ export default function Home() {
             </button>
           </div>
 
-          {/* <ConnectButton /> */}
+          <ConnectButton />
         </div>
       </>
     </div>
