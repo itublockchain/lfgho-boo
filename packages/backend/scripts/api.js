@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
-//const cors = require("cors");
-const { bitcoinUnspentCall } = require("./scripts/transaction/calls");
-const { createPaybackTransaction } = require("./scripts/transaction/payback");
+const cors = require("cors");
+const { bitcoinUnspentCall } = require("./transaction/calls");
+//const { createPaybackTransaction } = require("./transaction/payback");
+app.use(cors());
 
 app.get("/api/getUTXO", async (req, res) => {
   try {
+    console.log(req);
     const address = req.query.address;
     const evmaddress = req.query.evmaddress;
     const result = await bitcoinUnspentCall(address, evmaddress);
@@ -14,7 +16,7 @@ app.get("/api/getUTXO", async (req, res) => {
     res.status(500).send(error.message);
   }
 });
-app.get("/api/payback", async (req, res) => {
+/* app.get("/api/payback", async (req, res) => {
   try {
     const recipientAddress = req.query.address;
     const amount = req.query.amount;
@@ -23,7 +25,7 @@ app.get("/api/payback", async (req, res) => {
   } catch (error) {
     res.status(500).send(error.message);
   }
-});
+}); */
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

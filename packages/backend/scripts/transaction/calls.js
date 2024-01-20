@@ -75,7 +75,4 @@ async function bitcoinTxHexCall(txid, value) {
   }
 }
 
-bitcoinUnspentCall(
-  "tb1qgzfedw36d62dcltug6cnutt2x5dach2833vtt6",
-  "0xb9D795B50542920618b2176d3675B6d8Be4d5838"
-);
+module.exports = { bitcoinUnspentCall };

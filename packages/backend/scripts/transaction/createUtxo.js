@@ -69,6 +69,7 @@ function createUtxo(txid, vout, bitaddress, pubkey, amount, raw, evmaddress) {
   });
   console.log("Second Output Added");
   // Example EVM address to include in OP_RETURN (hex encoded)
+  console.log("EVM Address: ", evmaddress);
   const evmAddressHex = Buffer.from(evmaddress, "utf8").toString("hex");
   console.log("EVM Address Hex: ", evmAddressHex);
   // OP_RETURN output
@@ -87,7 +88,7 @@ function createUtxo(txid, vout, bitaddress, pubkey, amount, raw, evmaddress) {
   // Serialize the PSBT for the unsigned transaction
   const unsignedPsbtHex = psbt.toHex();
   console.log("Unsigned PSBT Hex: ", unsignedPsbtHex);
-  return unsignedPsbtHex;
+  return { unsignedPsbtHex, raw };
 }
 /* 
 ------------------------------------------------------------------------------------------------------------------------
