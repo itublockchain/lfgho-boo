@@ -62,7 +62,7 @@ export default function Home() {
           </button>
         </div>
         <div
-          className="absolute top-[63%] left-[50%] bg-[#8AF3FB] rounded-[10px] shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)]  border-l-8 border-b-8 border-black text-center 
+          className="absolute top-[71%] left-[50%] bg-[#8AF3FB] rounded-[10px] shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)]  border-l-8 border-b-8 border-black text-center 
         w-[500px] h-[120px]  justify-center  flex flex-col items-center translate-y-[-50%] translate-x-[-50%]"
         >
           <input
