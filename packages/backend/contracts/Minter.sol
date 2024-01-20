@@ -12,6 +12,13 @@ import "./interfaces/IGhoToken.sol";
 */
 
 contract Minter {
+    event mintFBTX(
+        uint256 amount,
+        string opReturnString,
+        address opAddress,
+        uint256 ghoAmount
+    );
+
     BTCRelay public relay;
     BitcoinTxParser public btcTxParser;
     Oracle public priceFeed;
@@ -61,7 +68,7 @@ contract Minter {
         uint256 amount = stringToUint(parsedTx.standardOutputs[0].value);
         //get op_return
         string memory opReturnString = parsedTx.opReturnData;
-        address opAddress = address(bytes20(bytes(opReturnString)));
+        address opAddress = parseHexStringToAddress(opReturnString);
         //get usd
         uint256 satoshiInUsd = getPriceOfSatoshi(amount);
         //mint
@@ -71,6 +78,7 @@ contract Minter {
         isTxHashUsed[txHash] = true;
         //set txhash to amount
         txHashToAmount[txHash] = ghoAmount;
+        emit mintFBTX(amount, opReturnString, opAddress, ghoAmount);
     }
 
     function payback(bytes32 _txHash) public {
@@ -101,5 +109,35 @@ contract Minter {
 
     function getPriceOfSatoshi(uint256 _amount) public view returns (uint256) {
         return priceFeed.getConversionRate(_amount);
+    }
+
+    function parseHexStringToAddress(
+        string memory _a
+    ) internal pure returns (address _parsedAddress) {
+        bytes memory tmp = bytes(_a);
+        uint160 iaddr = 0;
+        uint160 b1;
+        uint160 b2;
+        for (uint i = 2; i < 2 + 2 * 20; i += 2) {
+            iaddr *= 256;
+            b1 = uint160(uint8(tmp[i]));
+            b2 = uint160(uint8(tmp[i + 1]));
+            if ((b1 >= 97) && (b1 <= 102)) {
+                b1 -= 87;
+            } else if ((b1 >= 48) && (b1 <= 57)) {
+                b1 -= 48;
+            } else if ((b1 >= 65) && (b1 <= 70)) {
+                b1 -= 55;
+            }
+            if ((b2 >= 97) && (b2 <= 102)) {
+                b2 -= 87;
+            } else if ((b2 >= 48) && (b2 <= 57)) {
+                b2 -= 48;
+            } else if ((b2 >= 65) && (b2 <= 70)) {
+                b2 -= 55;
+            }
+            iaddr += (b1 * 16 + b2);
+        }
+        return address(iaddr);
     }
 }

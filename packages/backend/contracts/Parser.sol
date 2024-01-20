@@ -49,23 +49,34 @@ contract BitcoinTxParser {
         }
 
         // Parse the OP_RETURN output
-        offset += 8; // Skip the value of the OP_RETURN output
+        offset += 8; // Skip the value of the OP_RETURN output (usually 0)
         uint scriptLen1;
         (scriptLen1, offset) = readVarInt(_tx, offset);
         require(_tx[offset] == 0x6a, "Last output is not OP_RETURN");
-        offset += 1; // Skip OP_RETURN opcode
-        string memory opReturnString = convertBytesToString(
+        offset += 1; // Skip OP_RETURN opcode (0x6a)
+
+        // Ensure that the length is sufficient to extract the OP_RETURN data
+        require(
+            offset + scriptLen1 <= _tx.length,
+            "OP_RETURN data is out of bounds"
+        );
+
+        // Extract OP_RETURN data (subtract 1 to exclude the OP_RETURN opcode)
+        string memory opReturnData = convertBytesToString(
             slice(_tx, offset, scriptLen1 - 1)
         );
-        if (bytes(opReturnString)[0] == "*") {
-            opReturnString = sliceString(
-                opReturnString,
+
+        // Check if the OP_RETURN data starts with an asterisk (*) and remove it
+        if (bytes(opReturnData)[0] == bytes1("*")) {
+            parsedTx.opReturnData = sliceString(
+                opReturnData,
                 1,
-                bytes(opReturnString).length - 1
+                bytes(opReturnData).length
             );
+        } else {
+            parsedTx.opReturnData = opReturnData;
         }
-        // Store the amount associated with the Ethereum address from OP_RETURN
-        parsedTx.opReturnData = opReturnString;
+
         return parsedTx;
     }
 
@@ -158,13 +169,13 @@ contract BitcoinTxParser {
 
     function sliceString(
         string memory str,
-        uint startIndex,
-        uint endIndex
+        uint256 start,
+        uint256 end
     ) internal pure returns (string memory) {
         bytes memory strBytes = bytes(str);
-        bytes memory result = new bytes(endIndex - startIndex);
-        for (uint i = startIndex; i < endIndex; i++) {
-            result[i - startIndex] = strBytes[i];
+        bytes memory result = new bytes(end - start);
+        for (uint i = start; i < end; i++) {
+            result[i - start] = strBytes[i];
         }
         return string(result);
     }
