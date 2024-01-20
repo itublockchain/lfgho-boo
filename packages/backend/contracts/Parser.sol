@@ -1,16 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import "./Minter.sol";
 
 /*
 @title Bitcoin Transaction Parser
 @dev Parses a Bitcoin transaction and extracts two regular outputs and the OP_RETURN output
 */
 contract BitcoinTxParser {
-    Minter public minter;
-
-    mapping(address => uint256) public addressToAmount;
-
     struct Output {
         string value; // BTC amount in Satoshis as a string
         bytes scriptPubKey;
@@ -21,10 +16,6 @@ contract BitcoinTxParser {
         string opReturnData; // Data from OP_RETURN output as a string
     }
 
-    constructor(address _minterAddress) {
-        minter = Minter(_minterAddress);
-    }
-
     /*
     @notice Parses a Bitcoin transaction and extracts the two regular outputs and the OP_RETURN output
     @param _tx The Bitcoin transaction to parse
@@ -32,7 +23,7 @@ contract BitcoinTxParser {
     */
     function parseTransaction(
         bytes memory _tx
-    ) public returns (BitcoinTransaction memory) {
+    ) public pure returns (BitcoinTransaction memory) {
         BitcoinTransaction memory parsedTx;
 
         // Start after version (4 bytes) and SegWit marker & flag (2 bytes)
@@ -75,11 +66,6 @@ contract BitcoinTxParser {
         }
         // Store the amount associated with the Ethereum address from OP_RETURN
         parsedTx.opReturnData = opReturnString;
-        address opAddress = address(bytes20(bytes(opReturnString)));
-        addressToAmount[opAddress] = stringToUint(
-            parsedTx.standardOutputs[0].value
-        );
-
         return parsedTx;
     }
 

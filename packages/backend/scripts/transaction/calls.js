@@ -1,63 +1,81 @@
-const axios = require("axios"); // HTTP client
-
-/* const fs = require("fs");
-const envFilePath = "../../env.json";
-const envFileContent = fs.readFileSync(envFilePath, "utf8");
-const envConfig = JSON.parse(envFileContent);
- */
-
+const axios = require("axios");
+const createUTXO = require("./createUtxo");
 // Configure Bitcoin Api
 const btcApiBase = `https://api.blockcypher.com/v1/btc/test3/`;
 
-/*
-@param address - address of the user
-@dev bitcoinUnspentCall function gets the unspent transactions of the address
-@returns array of unspent transactions
-*/
-function bitcoinUnspentCall(address) {
-  return axios
-    .get(`${btcApiBase}addrs/${address}?unspentOnly=true`)
-    .then((response) => {
-      let inputs = [];
-      let inputsHex = [];
-      let utxos = response.data.txrefs;
-      let totalAmountAvailable = 0;
-      let inputCount = 0;
-      for (const element of utxos) {
-        if (element.spent === false) {
-          let utxo = {};
-          utxo.txid = element.tx_hash;
-          utxo.satoshis = element.value;
-          utxo.address = address;
-          utxo.vout = element.tx_output_n;
-          totalAmountAvailable += utxo.satoshis;
-          inputCount++;
-          inputs.push(utxo);
-        } else {
-          continue;
-        }
+async function bitcoinUnspentCall(address, evmaddress) {
+  try {
+    const response = await axios.get(
+      `${btcApiBase}addrs/${address}?unspentOnly=true`
+    );
+    let inputs = [];
+    let utxos = response.data.txrefs;
+    let totalAmountAvailable = 0;
+    for (const element of utxos) {
+      if (element.spent === false) {
+        let utxo = {
+          txid: element.tx_hash,
+          satoshis: element.value,
+          address: address,
+          vout: element.tx_output_n,
+        };
+        totalAmountAvailable += utxo.satoshis;
+        inputs.push(utxo);
       }
-      console.log(inputs);
-      console.log("Total Amount Available: ", totalAmountAvailable);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-/*
-@param txid - transaction id
-@dev bitcoinTxHexCall function gets the transaction hex
-@returns transaction hex
-*/
-function bitcoinTxHexCall(txid) {
-  return axios
-    .get(`https://api.blockcypher.com/v1/btc/test3/txs/${txid}?includeHex=true`)
-    .then((response) => {
-      console.log(response.data.hex);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    }
+    //console.log(inputs);
+    //console.log("Total Amount Available: ", totalAmountAvailable);
+
+    // Find the UTXO with the greatest amount
+    let maxUtxo = inputs.reduce(
+      (prev, current) => (prev.satoshis > current.satoshis ? prev : current),
+      { satoshis: 0 }
+    );
+    console.log("Greatest Amount : ", maxUtxo.satoshis);
+
+    // Call bitcoinTxHexCall to get the hex and pubkey
+    if (maxUtxo.txid) {
+      const { hex, pubkey } = await bitcoinTxHexCall(
+        maxUtxo.txid,
+        maxUtxo.satoshis
+      );
+      console.log("Transaction Hex: ", hex);
+      console.log("Public Key: ", pubkey);
+      // convert satoshi to string btc
+      const btc = maxUtxo.satoshis / 1e8;
+      const unsignedTx = createUTXO(
+        maxUtxo.txid,
+        maxUtxo.vout,
+        maxUtxo.address,
+        pubkey,
+        `${btc}`,
+        hex,
+        evmaddress
+      );
+      return unsignedTx;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
-bitcoinUnspentCall("tb1qgzfedw36d62dcltug6cnutt2x5dach2833vtt6");
+async function bitcoinTxHexCall(txid, value) {
+  try {
+    const response = await axios.get(
+      `${btcApiBase}txs/${txid}?includeHex=true`
+    );
+    let hex = response.data.hex;
+    let outputs = response.data.outputs;
+    let pubkey = outputs.find((output) => output.value === value)?.script || "";
+    return { hex, pubkey }; // Return an object containing both values
+  } catch (error) {
+    console.error(error);
+    return {}; // Return an empty object in case of an error
+  }
+}
+
+bitcoinUnspentCall(
+  "tb1qgzfedw36d62dcltug6cnutt2x5dach2833vtt6",
+  "0xb9D795B50542920618b2176d3675B6d8Be4d5838"
+);

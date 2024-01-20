@@ -15,6 +15,7 @@
     "dotenv": "^16.3.1",
     "ecpair": "^2.1.0",
     "ethers": "^6.10.0",
+    "expressjs": "^1.0.1",
     "merkle-js": "^0.0.2",
     "merkletreejs": "^0.3.11",
     "mocha": "^10.2.0",

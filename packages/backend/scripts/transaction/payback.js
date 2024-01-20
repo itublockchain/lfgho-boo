@@ -30,12 +30,7 @@ async function getUTXOs(address) {
 @dev createEscrowTransaction function creates a transaction
 @returns transaction
 */
-async function createEscrowTransaction(
-  recipientAddress,
-  amount,
-  firstkey,
-  secondkey
-) {
+async function createPaybackTransaction(recipientAddress, amount) {
   const tx = new bitcore.Transaction();
 
   const utxos = await getUTXOs(multisigAddress);
@@ -46,14 +41,9 @@ async function createEscrowTransaction(
   tx.from(utxos);
   tx.to(recipientAddress, amount);
   tx.change(multisigAddress);
-  tx.sign([firstkey, secondkey]);
+  tx.sign([envConfig.BITCOIN_PRIVATE_KEY, envConfig.BITCOIN_PRIVATE_KEY2]);
 
   return tx;
 }
 
-createEscrowTransaction(
-  "tb1qgzfedw36d62dcltug6cnutt2x5dach2833vtt6",
-  100000000,
-  envConfig.BITCOIN_PRIVATE_KEY,
-  envConfig.BITCOIN_PRIVATE_KEY2
-);
+module.exports = createPaybackTransaction;
