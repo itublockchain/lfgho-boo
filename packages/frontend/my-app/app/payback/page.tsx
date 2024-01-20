@@ -21,7 +21,7 @@ const Page = () => {
 
   console.log(decimalrate);
   
-  const rate = ((Number(ghoValue) / ((Number(decimalrate)) / 1e8)));
+  const rate = Math.floor((Number(ghoValue) / ((Number(decimalrate)) / 1e8)));
   console.log(rate);
   
   return (
