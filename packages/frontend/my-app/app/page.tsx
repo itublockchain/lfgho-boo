@@ -48,7 +48,7 @@ export default function Home() {
               <div className="bg-white border-black border-[3px] rounded-full h-[77px] w-[77px] bg-[url('/GHO_LOGO.jpeg')] bg-center bg-no-repeat bg-cover mt-12 "></div>
               <p className="text-black font-bold font-sans mt-6">GHO Token</p>
               <input
-                type="text"
+                type="number"
                 value={rate}
                 readOnly
                 className="bg-[#99DDE2] border-[3px] border-black rounded-md mt-3 py-1 w-[85px] text-center font-bold"
