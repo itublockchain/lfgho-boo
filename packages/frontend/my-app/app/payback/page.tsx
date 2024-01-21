@@ -25,10 +25,10 @@ const Page = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowApprovedPopup(true);
+      setShowApprovedPopup(isSuccess);
+      setGhoState(isSuccess);
     }
-  },
-  [isSuccess]);
+  },[isSuccess]);
 
   async function approve() {
     try {
@@ -39,10 +39,7 @@ const Page = () => {
       console.error("Error ", error);
     }
   }
-  async function checkApprove() {
-    await approve();
-    setGhoState(true);
-  }
+  
 
   const { data: decimalrate } = useContractRead({
     address: "0x65dae2712abae2120a39ca362b0dc73db4ef2630",
@@ -97,7 +94,7 @@ const Page = () => {
             {!ghoState ? (
               <button
                 className=" bg-[#b4faff] hover:bg-white   rounded-md border-[3px] px-4 py-1 mb-4 border-black"
-                onClick={() => checkApprove()}
+                onClick={() => approve()}
               >
                 Approve
               </button>
