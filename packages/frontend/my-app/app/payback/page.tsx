@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useContractRead, useContractWrite } from "wagmi";
 import Image from "next/image";
@@ -9,8 +9,12 @@ import ghoABI from "../abis/ghoABI.json";
 const Page = () => {
   const [ghoValue, setGhoValue] = useState(1);
   const [ghoState, setGhoState] = useState(false);
+  const [showApprovedPopup, setShowApprovedPopup] = useState(false);
   const handleInputChange = (e: any) => {
     setGhoValue(e.target.value);
+  };
+  const handleApprovedPopupClose = () => {
+    setShowApprovedPopup(false);
   };
 
   const { data, isLoading, isSuccess, write } = useContractWrite({
@@ -18,6 +22,13 @@ const Page = () => {
     abi: ghoABI,
     functionName: "approve",
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      setShowApprovedPopup(true);
+    }
+  },
+  [isSuccess]);
 
   async function approve() {
     try {
@@ -93,7 +104,7 @@ const Page = () => {
             ) : (
               <button
                 disabled
-                className="bg-[#b4faff]    rounded-md border-[3px] px-4 py-1 mb-12 border-black"
+                className="bg-[#b4faff]  opacity-25  rounded-md border-[3px] px-4 py-1 mb-12 border-black"
               >
                 Approve
               </button>
@@ -104,6 +115,22 @@ const Page = () => {
           </div>
         </div>
       </>
+      {showApprovedPopup && (
+        <div
+          className="fixed top-0 left-0 w-full h-full flex items-center justify-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <div className="bg-white p-8 rounded-md text-center">
+            <p className="text-green-500 font-bold text-lg mb-4">Approved!</p>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded-md"
+              onClick={handleApprovedPopupClose}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
