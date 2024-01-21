@@ -16,20 +16,18 @@
   }
 }  */
 
- body {
+body {
   margin: 0;
   padding: 0;
   background-color: #b4faff;
   width: 100vw;
   height: 100vh;
   background-image: url(../public/bg_hayaletler.png);
-  
+
   background-position: center center;
   background-repeat: no-repeat;
   background-size: contain;
-  
 
-  
   /* color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -37,9 +35,7 @@
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
-} 
-
-
+}
 
 /* .deposit-btc {
   position: absolute;
@@ -54,6 +50,3 @@
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 } */
-
-
-

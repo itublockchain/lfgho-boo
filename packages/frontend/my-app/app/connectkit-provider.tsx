@@ -8,7 +8,7 @@ const chains = [sepolia];
 
 const config = createConfig(
   getDefaultConfig({
-    alchemyId: process.env.ALCHEMY_ID, // or infuraId
+    alchemyId: process.env.ALCHEMY_ID,
     walletConnectProjectId:
       process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
     chains,

@@ -47,7 +47,7 @@ function createUtxo(txid, vout, bitaddress, pubkey, amount, raw, evmaddress) {
   // add output - destination address and the amount to transfer to
   // the out value is amount - 0.01 BTC because of fees
   console.log("Amount: ", amount);
-  const outValue = Math.floor((amount - 0.00015) * 1e8); // value in satoshi
+  const outValue = Math.floor(amount - 0.0001 * 1e8); // value in satoshi
   console.log("Out Value: ", outValue);
   psbt.addOutput({
     address: "tb1q4ru2elfmym7vtw4lh3xlzt5cley25j4vrpp8et", // This will change with VAULT Bridge Address

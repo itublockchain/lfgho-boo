@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useContractRead, useAccount, useContractWrite } from "wagmi";
 import { fetchSigned } from "../utils/util";
@@ -16,8 +15,6 @@ export default function Home() {
   const unisat = (window as any).unisat;
   const bitaddress = localStorage.getItem("bitAddress");
   const { address: evmAddress } = useAccount();
-  const [utxoData, setUtxoData] = useState(null);
-  const [utxoCreating, setUtxoCreating] = useState(false);
   const handleCreateUTXO = async (bitaddress: any, familykitadd: any) => {
     try {
       const fetchedDatas = await fetchSigned(unisat, bitaddress, familykitadd);
@@ -27,7 +24,7 @@ export default function Home() {
           fetchedDatas.raw,
           "0x6100000000000000000000000000000000000000000000000000000000000000",
           [
-            "0x6100000000000000000000000000000000000000000000000000000000000000",
+            "0x02000000000101f9096321ad16c3ac335cc79dbf7b1111150f594710a0ca3658",
           ],
         ],
       });
@@ -37,7 +34,6 @@ export default function Home() {
   };
 
   const [inputValue, setInputValue] = useState(1);
-  const [transactionID, setTransactionID] = useState("Deposit First");
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
@@ -92,20 +88,6 @@ export default function Home() {
               onClick={() => handleCreateUTXO(bitaddress, evmAddress)}
             >
               Deposit
-            </button>
-          </div>
-          <div
-            className="absolute top-[63%] left-[50%] bg-[#8AF3FB] rounded-[10px] shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)]  border-l-8 border-b-8 border-black text-center 
-        w-[500px] h-[120px]  justify-center  flex flex-col items-center translate-y-[-50%] translate-x-[-50%]"
-          >
-            <input
-              type="text"
-              value={transactionID}
-              readOnly
-              className="bg-[#99DDE2] border-[3px] border-black rounded-md mt-3 py-1 w-[400px] text-center font-bold"
-            ></input>
-            <button className="bg-[#99DDE2] rounded-md border-[4px] px-4 py-1 mt-3 border-black font-bold">
-              Submit
             </button>
           </div>
         </div>

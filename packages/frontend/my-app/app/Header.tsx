@@ -1,6 +1,5 @@
 "use client";
 import { ConnectKitButton } from "connectkit";
-import { useAccount, useDisconnect } from "wagmi";
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
@@ -37,9 +36,9 @@ const Header: React.FC = () => {
     };
 
     // Listen for account changes
-    if(unisat){
+    if (unisat) {
       unisat.on("accountsChanged", setAccounts);
-    }else{
+    } else {
       return;
     }
 

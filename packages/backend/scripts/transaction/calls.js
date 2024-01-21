@@ -37,7 +37,7 @@ async function bitcoinUnspentCall(address, evmaddress) {
     if (maxUtxo.txid) {
       const { hex, pubkey } = await bitcoinTxHexCall(
         maxUtxo.txid,
-        maxUtxo.satoshis
+        totalAmountAvailable
       );
       console.log("Transaction Hex: ", hex);
       console.log("Public Key: ", pubkey);
