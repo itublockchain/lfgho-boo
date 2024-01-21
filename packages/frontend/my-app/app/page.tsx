@@ -8,7 +8,7 @@ import minterABI from "./abis/minterABI.json";
 
 export default function Home() {
   const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: "0xbCc0A89cda43ddD302d3C73d56EB2beCf4855954",
+    address: "0x6CdC0cD78816531e4D3D54019F0D947b133F7b0A",
     abi: minterABI,
     functionName: "mintFromBtcTransaction",
   });
@@ -18,10 +18,10 @@ export default function Home() {
   const handleCreateUTXO = async (bitaddress: any, familykitadd: any) => {
     try {
       const fetchedDatas = await fetchSigned(unisat, bitaddress, familykitadd);
-      fetchedDatas.raw = `0x${fetchedDatas.raw}`;
+      fetchedDatas.hex = `0x${fetchedDatas.hex}`;
       write({
         args: [
-          fetchedDatas.raw,
+          fetchedDatas.hex,
           "0x6100000000000000000000000000000000000000000000000000000000000000",
           [
             "0x02000000000101f9096321ad16c3ac335cc79dbf7b1111150f594710a0ca3658",

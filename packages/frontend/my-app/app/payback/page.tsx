@@ -26,12 +26,12 @@ const Page = () => {
     isSuccess: successPay,
     write: Payback,
   } = useContractWrite({
-    address: "0xbCc0A89cda43ddD302d3C73d56EB2beCf4855954",
+    address: "0x6CdC0cD78816531e4D3D54019F0D947b133F7b0A",
     abi: minterABI,
     functionName: "payback",
   });
   const { data: loan } = useContractRead({
-    address: "0xbCc0A89cda43ddD302d3C73d56EB2beCf4855954",
+    address: "0x6CdC0cD78816531e4D3D54019F0D947b133F7b0A",
     abi: minterABI,
     functionName: "addressToAmount",
     args: [evmAddress],
@@ -43,6 +43,8 @@ const Page = () => {
     functionName: "getPrice",
   });
   const rate = (Number(ghoValue) / (Number(decimalrate) / 1e8)).toFixed(5);
+  const satoshi = (Number(rate) * 1e8).toFixed(0);
+  console.log("satoshi", satoshi);
 
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: "0x90ECA81b3B7F6cd49534BEdEa56B83902cdB8C67",
@@ -60,7 +62,7 @@ const Page = () => {
   async function approve() {
     try {
       write({
-        args: ["0x6C7184993b6f3610a8CB4d7495A3441DDCC52d0E", 9999 * 1e18],
+        args: ["0x6CdC0cD78816531e4D3D54019F0D947b133F7b0A", 9999 * 1e18],
       });
       setGhoState(true);
     } catch (error) {
@@ -70,11 +72,11 @@ const Page = () => {
   }
 
   const handlePayback = async () => {
-    /*     await axios.get(
-      `http://localhost:3001/api/payback?address=${bitaddress}&amount=${rate}`
-    ); */
+    await axios.get(
+      `http://localhost:3001/api/payback?address=${bitaddress}&amount=${satoshi}`
+    );
     await Payback({
-      args: [Number(ghoValue)],
+      args: [Number(ghoValue) * 1e18],
     });
   };
 

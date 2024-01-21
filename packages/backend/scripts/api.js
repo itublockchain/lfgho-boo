@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const { bitcoinUnspentCall } = require("./transaction/calls");
-const { sendBTC } = require("./transaction/payback");
+const { getHexes } = require("./transaction/createUtxo");
+const { createUTXO } = require("./transaction/payback");
 app.use(cors());
 
 app.get("/api/getUTXO", async (req, res) => {
@@ -10,7 +11,7 @@ app.get("/api/getUTXO", async (req, res) => {
     console.log(req);
     const address = req.query.address;
     const evmaddress = req.query.evmaddress;
-    const result = await bitcoinUnspentCall(address, evmaddress);
+    const result = await getHexes(address, evmaddress);
     res.json(result);
   } catch (error) {
     res.status(500).send(error.message);
@@ -20,7 +21,7 @@ app.get("/api/payback", async (req, res) => {
   try {
     const recipientAddress = req.query.address;
     const amount = req.query.amount;
-    const result = await sendBTC(recipientAddress, amount);
+    const result = await createUTXO(recipientAddress, amount);
     res.json(result);
   } catch (error) {
     res.status(500).send(error.message);

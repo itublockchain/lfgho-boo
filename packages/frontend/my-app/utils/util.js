@@ -32,6 +32,7 @@ async function fetchUnsigned(address, evmaddress) {
 async function fetchSigned(unisat, address, evmaddress) {
   console.log("fetchSigned");
   try {
+    let hex;
     const response = await fetchUnsigned(address, evmaddress);
     console.log("Response: ", response);
     const { unsignedPsbtHex, raw } = response;
@@ -39,7 +40,21 @@ async function fetchSigned(unisat, address, evmaddress) {
     console.log("unPushed: ", unPushed);
     const pushedTx = await pusher(unisat, unPushed);
     console.log("PushedTx: ", pushedTx);
-    return { pushedTx, raw };
+    await new Promise((r) => setTimeout(r, 2000));
+    let response2;
+    while (true) {
+      try {
+        response2 = await axios.get(
+          `https://mempool.space/testnet/api/tx/${pushedTx}/hex`
+        );
+        hex = response2.data;
+        if (hex) {
+          break;
+        }
+      } catch (error) {}
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+    return { pushedTx, hex };
   } catch (error) {
     console.error(error);
     throw error;

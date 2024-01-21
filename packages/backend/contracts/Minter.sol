@@ -102,7 +102,6 @@ contract Minter {
 
     function payback(uint256 _amount) public {
         uint256 amount = addressToAmount[msg.sender];
-        require(amount - _amount < 0, "Can't overpay");
         require(
             IERC20(address(ghoToken)).allowance(msg.sender, address(this)) >=
                 _amount,
