@@ -37,7 +37,11 @@ const Header: React.FC = () => {
     };
 
     // Listen for account changes
-    unisat.on("accountsChanged", setAccounts);
+    if(unisat){
+      unisat.on("accountsChanged", setAccounts);
+    }else{
+      return;
+    }
 
     // Fetch accounts on component mount
     checkUnisat();
@@ -63,13 +67,13 @@ const Header: React.FC = () => {
             className="pb-10 mt-2"
           ></Image>
           <button
-            className="bg-[#ffffff] text-black font-sans  font-bold border-black border-[3px]
+            className="bg-[#ffffff] text-black font-sans  hover:bg-[#99DDE2] font-bold border-black border-[3px]
   border-solid px-6 py-1 rounded-2xl textcolor-white mb-5"
           >
             <a href="/">Home</a>
           </button>
           <button
-            className="bg-[#99DDE2] text-black font-sans  font-bold border-black border-[3px]
+            className="bg-[#99DDE2] text-black font-sans hover:bg-white font-bold border-black border-[3px]
   border-solid px-6 py-1 rounded-2xl textcolor-white mb-5"
           >
             <a href="/payback">Payback</a>
@@ -80,14 +84,14 @@ const Header: React.FC = () => {
           {connected ? (
             <button
               className="bg-[#99DDE2] text-black font-sans font-bold border-black border-[3px]
-  border-solid text-center rounded-lg textcolor-white w-[188px] h-[40px] mt-1 shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)] flex items-center justify-center"
+  border-solid text-center rounded-lg textcolor-white w-[188px] border-l-8 border-b-8 h-[40px] mt-1 shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)] flex items-center justify-center"
             >
               <span className="truncate">{truncateAddress(bitaddress)}</span>
             </button>
           ) : (
             <button
               className="bg-[#99DDE2] text-black font-sans font-bold border-black border-[3px]
-  border-solid text-center rounded-lg textcolor-white w-[188px] h-[40px] mt-1 shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)] flex items-center justify-center"
+  border-solid text-center rounded-lg textcolor-white w-[188px] h-[40px] hover:bg-white border-l-8 border-b-8 mt-1 shadow-[100px_35px_35px_-15px_rgba(0,0,0,0)] flex items-center justify-center"
               onClick={async () => {
                 const result = await unisat.requestAccounts();
               }}

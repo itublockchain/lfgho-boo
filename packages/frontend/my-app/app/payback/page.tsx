@@ -1,17 +1,41 @@
 "use client";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { useContractRead } from "wagmi";
+import { useContractRead , useContractWrite } from "wagmi";
 import Image from "next/image";
 import oracleABI from "../abis/oracleABI.json";
-
+import ghoABI from "../abis/ghoABI.json";
 
 const Page = () => {
   const [ghoValue, setGhoValue] = useState(1);
-
+  const [ghoState, setGhoState] = useState(false);
   const handleInputChange = (e: any) => {
     setGhoValue(e.target.value);
   };
+  
+
+  const { data, isLoading, isSuccess, write } = useContractWrite({
+    address: "0x90ECA81b3B7F6cd49534BEdEa56B83902cdB8C67",
+    abi: ghoABI,
+    functionName: "approve",
+    
+  });
+  
+async function approve(){
+    try {
+      write({args: ["0x6C7184993b6f3610a8CB4d7495A3441DDCC52d0E",0]});
+      
+      }  
+     catch (error) {
+      console.error("Error ", error);
+    }  
+  }
+async function checkApprove(){
+  await approve();
+  setGhoState(true);
+}  
+  
+
 
   const { data: decimalrate } = useContractRead({
     address: "0x65dae2712abae2120a39ca362b0dc73db4ef2630",
@@ -21,7 +45,7 @@ const Page = () => {
 
   console.log(decimalrate);
   
-  const rate = Math.floor((Number(ghoValue) / ((Number(decimalrate)) / 1e8)));
+  const rate = ((Number(ghoValue) / ((Number(decimalrate)) / 1e8))).toFixed(5);
   console.log(rate);
   
   return (
@@ -60,13 +84,29 @@ const Page = () => {
                 type="number"
                 value={rate}
                 readOnly
-                className="bg-[#99DDE2] border-[3px] border-black rounded-md mt-3 py-1 w-[85px] text-center font-bold"
+                className="bg-[#99DDE2] indent-1 border-[3px] border-black rounded-md mt-3 py-1 w-[85px] text-center font-bold"
               />
             </div>
           </div>
-          <button className="bg-[#b4faff] rounded-md border-[3px] px-4 py-1 mb-4 border-black">
+         <div className="space-x-6">
+
+          <button className="bg-[#b4faff] hover:bg-white  rounded-md border-[3px] px-4 py-1 mb-4 border-black">
             Payback
           </button>
+          {!ghoState ? (
+            <button  className=" bg-[#b4faff] hover:bg-white   rounded-md border-[3px] px-4 py-1 mb-4 border-black"
+            onClick={() => checkApprove()}
+            >
+              Approve
+            </button>
+          ) : (
+            <button disabled className="bg-[#b4faff]    rounded-md border-[3px] px-4 py-1 mb-4 border-black">
+              Approve
+            </button>
+          )
+}
+          
+         </div>
         </div>
       </>
     </div>
