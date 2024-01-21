@@ -1,13 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import dynamic from "next/dynamic";
-import { useContractRead, useContractWrite } from "wagmi";
+import { useContractRead, useContractWrite, useAccount } from "wagmi";
 import Image from "next/image";
 import oracleABI from "../abis/oracleABI.json";
 import ghoABI from "../abis/ghoABI.json";
+import minterABI from "../abis/minterABI.json";
 
 const Page = () => {
-  const [ghoValue, setGhoValue] = useState(1);
+  const bitaddress = localStorage.getItem("bitAddress");
+  const { address: evmAddress } = useAccount();
+  const [ghoValue, setGhoValue] = useState(0);
   const [ghoState, setGhoState] = useState(false);
   const [showApprovedPopup, setShowApprovedPopup] = useState(false);
   const handleInputChange = (e: any) => {
@@ -16,6 +20,29 @@ const Page = () => {
   const handleApprovedPopupClose = () => {
     setShowApprovedPopup(false);
   };
+  const {
+    data: dataPay,
+    isLoading: loadingPay,
+    isSuccess: successPay,
+    write: Payback,
+  } = useContractWrite({
+    address: "0xbCc0A89cda43ddD302d3C73d56EB2beCf4855954",
+    abi: minterABI,
+    functionName: "payback",
+  });
+  const { data: loan } = useContractRead({
+    address: "0xbCc0A89cda43ddD302d3C73d56EB2beCf4855954",
+    abi: minterABI,
+    functionName: "addressToAmount",
+    args: [evmAddress],
+  });
+
+  const { data: decimalrate } = useContractRead({
+    address: "0x65dae2712abae2120a39ca362b0dc73db4ef2630",
+    abi: oracleABI,
+    functionName: "getPrice",
+  });
+  const rate = (Number(ghoValue) / (Number(decimalrate) / 1e8)).toFixed(5);
 
   const { data, isLoading, isSuccess, write } = useContractWrite({
     address: "0x90ECA81b3B7F6cd49534BEdEa56B83902cdB8C67",
@@ -28,29 +55,28 @@ const Page = () => {
       setShowApprovedPopup(isSuccess);
       setGhoState(isSuccess);
     }
-  },[isSuccess]);
+  }, [isSuccess]);
 
   async function approve() {
     try {
       write({
         args: ["0x6C7184993b6f3610a8CB4d7495A3441DDCC52d0E", 9999 * 1e18],
       });
+      setGhoState(true);
     } catch (error) {
       console.error("Error ", error);
+      setGhoState(false);
     }
   }
-  
 
-  const { data: decimalrate } = useContractRead({
-    address: "0x65dae2712abae2120a39ca362b0dc73db4ef2630",
-    abi: oracleABI,
-    functionName: "getPrice",
-  });
-
-  console.log(decimalrate);
-
-  const rate = (Number(ghoValue) / (Number(decimalrate) / 1e8)).toFixed(5);
-  console.log(rate);
+  const handlePayback = async () => {
+    /*     await axios.get(
+      `http://localhost:3001/api/payback?address=${bitaddress}&amount=${rate}`
+    ); */
+    await Payback({
+      args: [Number(ghoValue)],
+    });
+  };
 
   return (
     <div id="payback" className="p=20 flex justify-between    ">
@@ -106,7 +132,10 @@ const Page = () => {
                 Approve
               </button>
             )}
-            <button className="bg-[#b4faff] hover:bg-white  rounded-md border-[3px] px-4 py-1 mb-12 border-black">
+            <button
+              className="bg-[#b4faff] hover:bg-white  rounded-md border-[3px] px-4 py-1 mb-12 border-black"
+              onClick={() => handlePayback()}
+            >
               Payback
             </button>
           </div>
@@ -117,10 +146,12 @@ const Page = () => {
           className="fixed top-0 left-0 w-full h-full flex items-center justify-center"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
         >
-          <div className="bg-white p-8 rounded-md text-center">
-            <p className="text-green-500 font-bold text-lg mb-4">Approved!</p>
+          <div className="bg-[#8AF3FB] p-8 rounded-md text-center">
+            <p className="text-black font-bold text-lg mb-4 text-center">
+              Approved!
+            </p>
             <button
-              className="bg-green-500 text-white px-4 py-2 rounded-md"
+              className="bg-[#74cbd1] text-gray font-bold px-4 py-2 rounded-md text-center"
               onClick={handleApprovedPopupClose}
             >
               Close

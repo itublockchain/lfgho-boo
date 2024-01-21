@@ -1,6 +1,5 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import "forge-std/console.sol";
 import "./Parser.sol";
 import "./Oracle.sol";
 import "./Relay.sol";
@@ -12,7 +11,7 @@ import "./interfaces/IGhoToken.sol";
 */
 
 contract Minter {
-    event mintFBTX(
+    event mintFromBtcTransactionEvent(
         uint256 amount,
         string opReturnString,
         address opAddress,
@@ -28,6 +27,7 @@ contract Minter {
         address btcAddress;
         address evmAddress;
         uint256 ghoValue;
+        bytes32 txHash;
     }
 
     mapping(bytes32 => bool) public isTxHashUsed;
@@ -35,6 +35,8 @@ contract Minter {
     mapping(bytes32 => bool) public isTxHashRepaid;
     mapping(bytes32 => Transaction) public txHashToTransaction;
     mapping(bytes32 => uint256) public txHashToAmount;
+    mapping(address => bytes32[]) public addressToTxHashes;
+    mapping(address => uint256) public addressToAmount;
 
     constructor(
         address _btcRelayAddress,
@@ -78,24 +80,59 @@ contract Minter {
         isTxHashUsed[txHash] = true;
         //set txhash to amount
         txHashToAmount[txHash] = ghoAmount;
-        emit mintFBTX(amount, opReturnString, opAddress, ghoAmount);
+        //set address to amount
+        addressToAmount[opAddress] += ghoAmount;
+        //set address to txhash
+        addressToTxHashes[opAddress].push(txHash);
+        //txhash to transaction
+        txHashToTransaction[txHash] = Transaction(
+            opAddress,
+            msg.sender,
+            ghoAmount,
+            txHash
+        );
+        //emit event
+        emit mintFromBtcTransactionEvent(
+            amount,
+            opReturnString,
+            opAddress,
+            ghoAmount
+        );
     }
 
-    function payback(bytes32 _txHash) public {
-        require(!isTxHashRepaid[_txHash], "Transaction is already repayed");
-        uint256 amount = txHashToAmount[_txHash];
-        require(amount > 0, "Amount is 0");
+    function payback(uint256 _amount) public {
+        uint256 amount = addressToAmount[msg.sender];
+        require(amount - _amount < 0, "Can't overpay");
         require(
             IERC20(address(ghoToken)).allowance(msg.sender, address(this)) >=
-                amount,
+                _amount,
             "Insufficient token allowance for payback"
         );
-        ghoToken.transferFrom(msg.sender, address(this), amount);
-        ghoToken.burn(amount);
-        isTxHashRepaid[_txHash] = true;
+        addressToAmount[msg.sender] -= _amount;
+        ghoToken.transferFrom(msg.sender, address(this), _amount);
+        ghoToken.burn(_amount);
+    }
+
+    /*** View Functions ***/
+
+    function getTxHashes(
+        address _address
+    ) public view returns (bytes32[] memory) {
+        return addressToTxHashes[_address];
+    }
+
+    function checkTxHashUsed(bytes32 _txHash) public view returns (bool) {
+        return isTxHashUsed[_txHash];
+    }
+
+    function getAmountByAddress(
+        address _address
+    ) public view returns (uint256) {
+        return addressToAmount[_address];
     }
 
     // *** Helper Functions *** //
+
     function stringToUint(string memory s) internal pure returns (uint256) {
         bytes memory b = bytes(s);
         uint256 result = 0;

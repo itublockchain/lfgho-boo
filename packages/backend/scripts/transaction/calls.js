@@ -68,6 +68,7 @@ async function bitcoinTxHexCall(txid, value) {
     let hex = response.data.hex;
     let outputs = response.data.outputs;
     let pubkey = outputs.find((output) => output.value === value)?.script || "";
+    console.log("bitcoinTxHexCall: ", hex);
     return { hex, pubkey }; // Return an object containing both values
   } catch (error) {
     console.error(error);

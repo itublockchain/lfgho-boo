@@ -8,7 +8,7 @@ import minterABI from "./abis/minterABI.json";
 
 export default function Home() {
   const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: "0x6C7184993b6f3610a8CB4d7495A3441DDCC52d0E",
+    address: "0xbCc0A89cda43ddD302d3C73d56EB2beCf4855954",
     abi: minterABI,
     functionName: "mintFromBtcTransaction",
   });
